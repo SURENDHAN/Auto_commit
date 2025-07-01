@@ -1,0 +1,25 @@
+name: Daily Commit
+
+on:
+  schedule:
+    - cron: "0 8 * * *" # Runs every day at 08:00 UTC
+  workflow_dispatch: # optional manual trigger
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Update file
+        run: |
+          echo "Updated on $(date)" > streak.txt
+
+      - name: Commit & Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add streak.txt
+          git commit -m "Daily commit $(date)" || echo "No changes to commit"
+          git push
